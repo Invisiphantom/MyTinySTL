@@ -11,7 +11,7 @@ namespace mystl
 
 // helper struct
 
-template <class T, T v>
+template <typename T, T v>
 struct m_integral_constant
 {
   static constexpr T value = v;
