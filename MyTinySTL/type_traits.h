@@ -4,25 +4,31 @@
 
 namespace mystl {
 
-template <typename T, T v> struct m_integral_constant {
+template <bool Cond, typename Tp = int>
+using enable_if_type = typename std::enable_if<Cond, Tp>::type;
+
+/*----integral_constant----*/
+
+template <typename T, T v>
+struct m_integral_constant {
     static constexpr T value = v;
+    constexpr T operator()() const noexcept { return value; }
 };
 
-template <bool b> using m_bool_constant = m_integral_constant<bool, b>;
+template <bool v>
+using m_bool_constant = m_integral_constant<bool, v>;
 typedef m_bool_constant<true> m_true_type;
 typedef m_bool_constant<false> m_false_type;
 
-/*****************************************************************************************/
-// type traits
+/*----is_pair----*/
 
-// is_pair
+template <class T1, class T2>
+struct pair;
 
-// --- forward declaration begin
-template <class T1, class T2> struct pair;
-// --- forward declaration end
+template <class T>
+struct is_pair : mystl::m_false_type {};
 
-template <class T> struct is_pair : mystl::m_false_type {};
+template <class T1, class T2>
+struct is_pair<mystl::pair<T1, T2>> : mystl::m_true_type {};
 
-template <class T1, class T2> struct is_pair<mystl::pair<T1, T2>> : mystl::m_true_type {};
-
-} // namespace mystl
+}  // namespace mystl

@@ -1,12 +1,22 @@
 #include <iostream>
+#include <bits/stl_pair.h>
 
-#include "MyTinySTL/vector.h"
+using namespace std;
 
-int
-main ()
-{
-  mystl::vector<int> demo = { 1, 2, 3 };
-  demo.push_back (4);
-  for (auto i : demo)
-    std::cout << i << std::endl;
+template <typename T1, typename T2>
+class Demo {
+   private:
+    T1 first;
+    T2 second;
+
+   public:
+    template <U1 = T1, U2 = T2>
+    constexpr Demo(U1 x, U2 y) : first(x), second(y) {}
+};
+
+int main() {
+    pair<int, int> p1('a', 'b');
+    // Demo<int, int> demo1(1, 2);
+    cout << p1.first << endl;
+    return 0;
 }

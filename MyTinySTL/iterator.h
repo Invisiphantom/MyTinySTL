@@ -53,29 +53,29 @@ struct has_iterator_cat {
         |---iterator_traits_impl <has_iterator_cat>
 */
 
-template <typename _Iterator, bool>
+template <typename Iterator, bool>
 struct iterator_traits_impl {};
 
-template <typename _Iterator>
-struct iterator_traits_impl<_Iterator, true> {
-    typedef typename _Iterator::iterator_category iterator_category;
-    typedef typename _Iterator::value_type value_type;
-    typedef typename _Iterator::pointer pointer;
-    typedef typename _Iterator::reference reference;
-    typedef typename _Iterator::difference_type difference_type;
+template <typename Iterator>
+struct iterator_traits_impl<Iterator, true> {
+    typedef typename Iterator::iterator_category iterator_category;
+    typedef typename Iterator::value_type value_type;
+    typedef typename Iterator::pointer pointer;
+    typedef typename Iterator::reference reference;
+    typedef typename Iterator::difference_type difference_type;
 };
 
-template <typename _Iterator, bool>
+template <typename Iterator, bool>
 struct iterator_traits_helper {};
 
-template <typename _Iterator>
-struct iterator_traits_helper<_Iterator, true>
+template <typename Iterator>
+struct iterator_traits_helper<Iterator, true>
     : public iterator_traits_impl<
-          _Iterator, std::is_convertible<typename _Iterator::iterator_category, input_iterator_tag>::value ||
-                         std::is_convertible<typename _Iterator::iterator_category, output_iterator_tag>::value> {};
+          Iterator, std::is_convertible<typename Iterator::iterator_category, input_iterator_tag>::value ||
+                         std::is_convertible<typename Iterator::iterator_category, output_iterator_tag>::value> {};
 
-template <typename _Iterator>
-struct iterator_traits : public iterator_traits_helper<_Iterator, has_iterator_cat<_Iterator>::value> {};
+template <typename Iterator>
+struct iterator_traits : public iterator_traits_helper<Iterator, has_iterator_cat<Iterator>::value> {};
 
 // 针对原生指针的偏特化版本
 template <typename T>
@@ -124,29 +124,29 @@ struct is_bidirectional_iterator : public has_iterator_cat_of<Iter, bidirectiona
 template <typename Iter>
 struct is_random_access_iterator : public has_iterator_cat_of<Iter, random_access_iterator_tag> {};
 
-template <typename _Iterator>
+template <typename Iterator>
 struct is_iterator
-    : public m_bool_constant<is_input_iterator<_Iterator>::value || is_output_iterator<_Iterator>::value> {};
+    : public m_bool_constant<is_input_iterator<Iterator>::value || is_output_iterator<Iterator>::value> {};
 
 /*--------------------------------------------------*/
 
 // iterator_category
-template <typename _Iterator>
-typename iterator_traits<_Iterator>::iterator_category iterator_category(const _Iterator &) {
-    typedef typename iterator_traits<_Iterator>::iterator_category Category;
+template <typename Iterator>
+typename iterator_traits<Iterator>::iterator_category iterator_category(const Iterator &) {
+    typedef typename iterator_traits<Iterator>::iterator_category Category;
     return Category();
 }
 
 // distance_type*
-template <typename _Iterator>
-typename iterator_traits<_Iterator>::difference_type *distance_type(const _Iterator &) {
-    return static_cast<typename iterator_traits<_Iterator>::difference_type *>(0);
+template <typename Iterator>
+typename iterator_traits<Iterator>::difference_type *distance_type(const Iterator &) {
+    return static_cast<typename iterator_traits<Iterator>::difference_type *>(0);
 }
 
 // value_type*
-template <typename _Iterator>
-typename iterator_traits<_Iterator>::value_type *value_type(const _Iterator &) {
-    return static_cast<typename iterator_traits<_Iterator>::value_type *>(0);
+template <typename Iterator>
+typename iterator_traits<Iterator>::value_type *value_type(const Iterator &) {
+    return static_cast<typename iterator_traits<Iterator>::value_type *>(0);
 }
 
 /*----distance----*/
@@ -205,29 +205,29 @@ void advance(InputIterator &i, Distance n) {
 
 /*--------reverse_iterator--------*/
 
-template <typename _Iterator>
+template <typename Iterator>
 class reverse_iterator {
    private:
-    _Iterator current;
+    Iterator current;
 
    public:
-    typedef typename iterator_traits<_Iterator>::iterator_category iterator_category;
-    typedef typename iterator_traits<_Iterator>::value_type value_type;
-    typedef typename iterator_traits<_Iterator>::difference_type difference_type;
-    typedef typename iterator_traits<_Iterator>::pointer pointer;
-    typedef typename iterator_traits<_Iterator>::reference reference;
+    typedef typename iterator_traits<Iterator>::iterator_category iterator_category;
+    typedef typename iterator_traits<Iterator>::value_type value_type;
+    typedef typename iterator_traits<Iterator>::difference_type difference_type;
+    typedef typename iterator_traits<Iterator>::pointer pointer;
+    typedef typename iterator_traits<Iterator>::reference reference;
 
    public:
     reverse_iterator() {}
-    explicit reverse_iterator(_Iterator iter) : current(iter) {}
+    explicit reverse_iterator(Iterator iter) : current(iter) {}
     reverse_iterator(const reverse_iterator &rhs) : current(rhs.current) {}
 
    public:
-    _Iterator base() const { return current; }
+    Iterator base() const { return current; }
 
     // *iter
     reference operator*() const {
-        _Iterator tmp = current;
+        Iterator tmp = current;
         return *--tmp;
     }
 
@@ -283,45 +283,45 @@ class reverse_iterator {
 };
 
 // lhs - rhs
-template <typename _Iterator>
-typename reverse_iterator<_Iterator>::difference_type operator-(const reverse_iterator<_Iterator> &lhs,
-                                                                const reverse_iterator<_Iterator> &rhs) {
+template <typename Iterator>
+typename reverse_iterator<Iterator>::difference_type operator-(const reverse_iterator<Iterator> &lhs,
+                                                                const reverse_iterator<Iterator> &rhs) {
     return rhs.base() - lhs.base();
 }
 
 // lhs == rhs
-template <typename _Iterator>
-bool operator==(const reverse_iterator<_Iterator> &lhs, const reverse_iterator<_Iterator> &rhs) {
+template <typename Iterator>
+bool operator==(const reverse_iterator<Iterator> &lhs, const reverse_iterator<Iterator> &rhs) {
     return lhs.base() == rhs.base();
 }
 
 // lhs < rhs
-template <typename _Iterator>
-bool operator<(const reverse_iterator<_Iterator> &lhs, const reverse_iterator<_Iterator> &rhs) {
+template <typename Iterator>
+bool operator<(const reverse_iterator<Iterator> &lhs, const reverse_iterator<Iterator> &rhs) {
     return rhs.base() < lhs.base();
 }
 
 // lhs != rhs
-template <typename _Iterator>
-bool operator!=(const reverse_iterator<_Iterator> &lhs, const reverse_iterator<_Iterator> &rhs) {
+template <typename Iterator>
+bool operator!=(const reverse_iterator<Iterator> &lhs, const reverse_iterator<Iterator> &rhs) {
     return !(lhs == rhs);
 }
 
 // lhs > rhs
-template <typename _Iterator>
-bool operator>(const reverse_iterator<_Iterator> &lhs, const reverse_iterator<_Iterator> &rhs) {
+template <typename Iterator>
+bool operator>(const reverse_iterator<Iterator> &lhs, const reverse_iterator<Iterator> &rhs) {
     return rhs < lhs;
 }
 
 // lhs <= rhs
-template <typename _Iterator>
-bool operator<=(const reverse_iterator<_Iterator> &lhs, const reverse_iterator<_Iterator> &rhs) {
+template <typename Iterator>
+bool operator<=(const reverse_iterator<Iterator> &lhs, const reverse_iterator<Iterator> &rhs) {
     return !(rhs < lhs);
 }
 
 // lhs >= rhs
-template <typename _Iterator>
-bool operator>=(const reverse_iterator<_Iterator> &lhs, const reverse_iterator<_Iterator> &rhs) {
+template <typename Iterator>
+bool operator>=(const reverse_iterator<Iterator> &lhs, const reverse_iterator<Iterator> &rhs) {
     return !(lhs < rhs);
 }
 
