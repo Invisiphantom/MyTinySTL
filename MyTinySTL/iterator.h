@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <cstddef>
 
@@ -41,7 +41,7 @@ struct has_iterator_cat {
     static char test(typename U::iterator_category * = 0);
 
    public:
-    // 判断是否匹配成功
+    // 判断是否是迭代器类型
     static const bool value = (sizeof(test<T>(0)) == sizeof(char));
 };
 
@@ -72,7 +72,7 @@ template <typename Iterator>
 struct iterator_traits_helper<Iterator, true>
     : public iterator_traits_impl<
           Iterator, std::is_convertible<typename Iterator::iterator_category, input_iterator_tag>::value ||
-                         std::is_convertible<typename Iterator::iterator_category, output_iterator_tag>::value> {};
+                        std::is_convertible<typename Iterator::iterator_category, output_iterator_tag>::value> {};
 
 template <typename Iterator>
 struct iterator_traits : public iterator_traits_helper<Iterator, has_iterator_cat<Iterator>::value> {};
@@ -125,8 +125,8 @@ template <typename Iter>
 struct is_random_access_iterator : public has_iterator_cat_of<Iter, random_access_iterator_tag> {};
 
 template <typename Iterator>
-struct is_iterator
-    : public m_bool_constant<is_input_iterator<Iterator>::value || is_output_iterator<Iterator>::value> {};
+struct is_iterator : public m_bool_constant<is_input_iterator<Iterator>::value || is_output_iterator<Iterator>::value> {
+};
 
 /*--------------------------------------------------*/
 
@@ -285,7 +285,7 @@ class reverse_iterator {
 // lhs - rhs
 template <typename Iterator>
 typename reverse_iterator<Iterator>::difference_type operator-(const reverse_iterator<Iterator> &lhs,
-                                                                const reverse_iterator<Iterator> &rhs) {
+                                                               const reverse_iterator<Iterator> &rhs) {
     return rhs.base() - lhs.base();
 }
 
